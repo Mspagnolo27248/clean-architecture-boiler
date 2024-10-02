@@ -1,5 +1,4 @@
-import { OrderDetail } from "../../../shared-common/database/custom-orm/data-models/OrderDetail";
-import { OrderHeader } from "../../../shared-common/database/custom-orm/data-models/OrderHeader";
+import {OrderHeaderModel } from "../../../shared-common/database/custom-orm/data-models/OrderHeaderModel";
 import { initializeDb } from "../../../shared-common/database/sqlite";
 import { Order } from "../domain-entities/OrderEntity";
 import { OrderRepository } from "./OrderEntryRepository";
@@ -11,7 +10,7 @@ export class OrderRepositoryImpl implements OrderRepository {
         
         try {  
             const orderHeader = order.getHeader();
-            const insertHeaderStatement = OrderHeader.insert(orderHeader);
+            const insertHeaderStatement = OrderHeaderModel.insert(orderHeader);
 
             // Start a transaction
             await db.exec('BEGIN TRANSACTION');

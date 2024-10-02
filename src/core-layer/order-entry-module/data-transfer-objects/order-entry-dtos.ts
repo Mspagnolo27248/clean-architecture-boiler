@@ -1,4 +1,4 @@
-import { FreightType } from "../enums/order-entry-enums";
+
 
 
 
@@ -16,4 +16,9 @@ export interface OrderHeaderDTO{
   customerID: number;
   orderDate: string;
   totalAmount: number;  
+}
+
+// OrderDTO combines OrderHeaderDTO and includes an additional details array
+export interface OrderDTO extends OrderHeaderDTO {
+  details: OrderDetailDTO[];
 }

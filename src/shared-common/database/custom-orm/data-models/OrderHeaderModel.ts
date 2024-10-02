@@ -3,7 +3,7 @@ import { ARGModel, KeyField } from "../orm-decorators";
 import { ORM } from "../parent-class-orm";
 
 @ARGModel('OrderHeader')
-export class OrderHeader extends ORM implements OrderHeaderDTO{
+export class OrderHeaderModel extends ORM implements OrderHeaderDTO{
     @KeyField
     orderID: number = 0;  // Primary key
     customerID: number = 0;

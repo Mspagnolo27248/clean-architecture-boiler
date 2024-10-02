@@ -1,22 +1,20 @@
 import { OrderRepositoryImpl } from "../../core-layer/order-entry-module/data-access-repository/OrderEntryRepositoryImp";
-import { OrderDetailDTO, OrderHeaderDTO } from "../../core-layer/order-entry-module/data-transfer-objects/order-entry-dtos";
+import {OrderDTO } from "../../core-layer/order-entry-module/data-transfer-objects/order-entry-dtos";
 import { Order } from "../../core-layer/order-entry-module/domain-entities/OrderEntity";
 import { CreateOrderUseCase } from "../../core-layer/order-entry-module/use-case-services/CreateOrderUseCase";
 import { Request, Response } from 'express';
 
-//Dependecy Injection
+//Dependecy Injection Section
 const orderRepository = new OrderRepositoryImpl();
 const createOrderUseCase = new CreateOrderUseCase(orderRepository);
 
 export class OrderController {
   static async create(req: Request, res: Response): Promise<Response> {
-    const orderHeader:OrderHeaderDTO = req.body.orderHeader;
-    const orderDetails:OrderDetailDTO[] = req.body.orderDetails;
+    const orderDTO:OrderDTO = req.body; //Need to validate this in middleware. 
   
-    try {  
-      const orderDTO = new Order(orderHeader,orderDetails);
-      const order = await createOrderUseCase.execute(orderDTO);
-      return res.status(201).json(order);
+    try {    
+      const createdOrder = await createOrderUseCase.execute(orderDTO);
+      return res.status(201).json(createdOrder);
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({ message:error.message });
