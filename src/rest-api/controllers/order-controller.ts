@@ -1,23 +1,20 @@
 import { OrderRepositoryImpl } from "../../core-layer/order-entry-module/data-access-repository/OrderEntryRepositoryImp";
-import { OrderDTO } from "../../core-layer/order-entry-module/data-transfer-objects/order-entry-dtos";
-import { FreightType } from "../../core-layer/order-entry-module/enums/order-entry-enums";
+import { OrderDetailDTO, OrderHeaderDTO } from "../../core-layer/order-entry-module/data-transfer-objects/order-entry-dtos";
+import { Order } from "../../core-layer/order-entry-module/domain-entities/OrderEntity";
 import { CreateOrderUseCase } from "../../core-layer/order-entry-module/use-case-services/CreateOrderUseCase";
 import { Request, Response } from 'express';
 
+//Dependecy Injection
 const orderRepository = new OrderRepositoryImpl();
 const createOrderUseCase = new CreateOrderUseCase(orderRepository);
 
 export class OrderController {
   static async create(req: Request, res: Response): Promise<Response> {
-    const { productCode, quantity, totalPrice, freightType }:OrderDTO = req.body;
-
-    try {
-      // Validate freight type
-      if (!Object.values(FreightType).includes(freightType)) {
-        return res.status(400).json({ message: 'Invalid freight type' });
-      }
-
-      const orderDTO = new OrderDTO(productCode, quantity, totalPrice, freightType);
+    const orderHeader:OrderHeaderDTO = req.body.orderHeader;
+    const orderDetails:OrderDetailDTO[] = req.body.orderDetails;
+  
+    try {  
+      const orderDTO = new Order(orderHeader,orderDetails);
       const order = await createOrderUseCase.execute(orderDTO);
       return res.status(201).json(order);
     } catch (error) {
@@ -30,3 +27,11 @@ export class OrderController {
     }
   }
 }
+
+//  Validate with enums
+// const validateFreightType = (freightType:string):void=>{
+//   if (!Object.values(FreightType).includes(freightType as 
+//   FreightType)) {
+//   throw new AppError('Invalid Freight Type', 400);
+// }
+//}

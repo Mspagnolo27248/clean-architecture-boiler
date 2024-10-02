@@ -11,7 +11,7 @@ dotenv.config();
 const app= express();
 const port = process.env.PORT || 8001;
 app.use(cors());
-app.use('/api-docs', 
+app.use('/api-docs', //http://localhost:8001/api-docs/
 swaggerUi.serve, swaggerUi.setup(swaggerSpec,{explorer:true}));
 app.use((req, res, next) => {
   res.setHeader('Content-Type', 'application/json');

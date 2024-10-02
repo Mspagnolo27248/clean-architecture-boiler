@@ -2,11 +2,18 @@ import { FreightType } from "../enums/order-entry-enums";
 
 
 
-export class OrderDTO {
-  constructor(
-    public productCode: string,
-    public quantity: number,
-    public totalPrice: number,
-    public freightType: FreightType
-  ) {}
+export interface OrderDetailDTO {
+  orderDetailID: number;  
+  orderID: number;  
+  productID: number;
+  quantity: number;
+  unitPrice: number;
+  lineTotal: number;
+}
+
+export interface OrderHeaderDTO{
+  orderID: number;  
+  customerID: number;
+  orderDate: string;
+  totalAmount: number;  
 }
