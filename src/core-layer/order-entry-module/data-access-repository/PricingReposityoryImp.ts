@@ -11,22 +11,11 @@ export class PricingRepositoryImp implements PricingRepository {
          let cretedRackPrice = await db.run(
             `INSERT INTO RackPricing ( `+
             `productId,containerId,rackPricePerUom,effectiveDate,expirationDate,uom,rackPricePerGallon`+
-            `) VALUES (?,?,?,?,?,?,?)`, 
+            `) VALUES (?,?,?,?,?,?)`, 
             [rackPriceDto.productId,rackPriceDto.containerId,
             rackPriceDto.rackPricePerUom,rackPriceDto.effectiveDate,
-            rackPriceDto.expirationDate,rackPriceDto.uom,
-            rackPriceDto.rackPricePerGallon]);
-        
-            const createdRackPrice: RackPrice = {
-                productId: rackPriceDto.productId,
-                containerId: rackPriceDto.containerId,
-                rackPricePerUom: rackPriceDto.rackPricePerUom,
-                effectiveDate: rackPriceDto.effectiveDate,
-                expirationDate: rackPriceDto.expirationDate,
-                uom: rackPriceDto.uom,
-                rackPricePerGallon: rackPriceDto.rackPricePerGallon
-            };
-
+            rackPriceDto.expirationDate,rackPriceDto.uom]);        
+            const createdRackPrice: RackPrice = new RackPrice(rackPriceDto);
             return createdRackPrice;
 
     } catch (error) {       

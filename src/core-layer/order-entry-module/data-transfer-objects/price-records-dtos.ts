@@ -1,19 +1,12 @@
+import { UnitOfMeasure } from "../enums/order-entry-enums";
 
 
 export interface RackPriceDto {
     productId: string;
     containerId: string;
     rackPricePerUom: number;
-    effectiveDate: Date;
-    expirationDate: Date;
-    uom: string;
-    rackPricePerGallon: number;
-
+    effectiveDate: number;
+    expirationDate: number;
+    uom: UnitOfMeasure;
 }
 
-
-// interface AgreementPriceDto {
-//     agreementPrice: number;
-//     effectiveDate: Date;
-//     expirationDate: Date;
-// }

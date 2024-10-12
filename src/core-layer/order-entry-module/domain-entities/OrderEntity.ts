@@ -6,11 +6,11 @@ export class Order {
 
   constructor(orderDTO:OrderDTO) {
       this.orderDTO = orderDTO;
-      this.orderDTO.totalAmount = this.calculateTotalAmount()
+     this.validateOrder();
   }
 
   // Domain logic: Validate if the order is valid
-  validateOrder(): void {
+  private validateOrder(): void {
       if (this.orderDTO.details.length === 0) {
           throw new Error('Order must contain at least one order detail.');
       }
@@ -22,28 +22,21 @@ export class Order {
           if (detail.unitPrice <= 0) {
               throw new Error('Unit price must be greater than zero for all order details.');
           }
-      }
-
-      if (this.orderDTO.totalAmount !== this.calculateTotalAmount()) {
-          throw new Error('Total amount mismatch. Recalculate total.');
-      }
+      }     
   }
 
-  // Calculate total amount from details
-  calculateTotalAmount(): number {
-      return this.orderDTO.details.reduce((sum, detail) => sum + detail.lineTotal, 0);
-  }
+  
 
   // Add an order detail to the order
   addDetail(detail: OrderDetailDTO): void {
       this.orderDTO.details.push(detail);
-      this.orderDTO.totalAmount = this.calculateTotalAmount();  // Recalculate total after adding detail
+      this.validateOrder();
   }
 
   // Remove an order detail by orderDetailID
   removeDetail(orderDetailID: number): void {
-      this.orderDTO.details = this.orderDTO.details.filter(detail => detail.orderDetailID !== orderDetailID);
-      this.orderDTO.totalAmount = this.calculateTotalAmount();  // Recalculate total after removing detail
+      this.orderDTO.details = this.orderDTO.details.filter(detail => detail.orderDetailID !== orderDetailID);   
+      this.validateOrder();
   }
 
   // Get order header information
@@ -58,13 +51,5 @@ export class Order {
       return this.orderDTO.details;
   }
 
-  // Get the total quantity of items in the order
-  getTotalQuantity(): number {
-      return this.orderDTO.details.reduce((total, detail) => total + detail.quantity, 0);
-  }
-
-  // Get total price of the order
-  getTotalPrice(): number {
-      return this.orderDTO.totalAmount;
-  }
 }
+

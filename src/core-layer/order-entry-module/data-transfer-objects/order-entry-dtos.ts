@@ -1,21 +1,22 @@
+import { UnitOfMeasure } from "../enums/order-entry-enums";
 
 
 
 
 export interface OrderDetailDTO {
   orderDetailID: number;  
-  orderID: number;  
-  productID: number;
+  orderID: string;  
+  productID: string;
+  containerID: string;
   quantity: number;
   unitPrice: number;
-  lineTotal: number;
+  uom: UnitOfMeasure;
 }
 
 export interface OrderHeaderDTO{
   orderID: number;  
   customerID: number;
   orderDate: string;
-  totalAmount: number;  
 }
 
 // OrderDTO combines OrderHeaderDTO and includes an additional details array

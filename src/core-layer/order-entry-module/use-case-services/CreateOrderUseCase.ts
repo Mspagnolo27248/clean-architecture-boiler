@@ -8,8 +8,7 @@ export class CreateOrderUseCase {
 
   async execute(orderDTO: OrderDTO,): Promise<OrderDTO> {
      const order = new Order(orderDTO);
-    try {     
-      order.validateOrder();
+    try {        
       const createdOrder = await this.orderRepository.createOrder(order);
       const orderHeaders = createdOrder.getHeader();
       const orderDetails = createdOrder.getDetails();

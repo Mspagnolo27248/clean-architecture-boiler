@@ -1,4 +1,4 @@
-import { UseCase } from "../../general-interfaces/UseCase";
+import { UseCase } from "../../general/UseCase";
 
 type calcualteMonthylEndingValuesProps = {
   YYYYMM: Number;
