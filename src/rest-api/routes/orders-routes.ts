@@ -26,4 +26,16 @@ ordersRoutes.put('/:id', (req: Request, res: Response) => { });
 
 ordersRoutes.delete('/', async (req: Request, res: Response) => { });
 
+
+ordersRoutes.post('/complete', async (req: Request, res: Response) => {
+  try {  
+    const result = await OrderController.billOrder(req, res);
+    return result; 
+  } catch (error) {
+    if(error instanceof Error){
+      return res.status(500).json({ message: error.message });
+    }
+    return res.status(500).json({ message: "Error creating order" });
+  }
+});
 export default ordersRoutes;

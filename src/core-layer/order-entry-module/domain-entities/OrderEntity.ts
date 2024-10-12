@@ -51,5 +51,15 @@ export class Order {
       return this.orderDTO.details;
   }
 
+  setBillingInfomation(gallonsFactors:Record<string,{unitsOfMeasureInAContainer:number,gallonsInAContainer:number}>):void{
+    for(const detail of this.orderDTO.details){
+      const gallonsFactor = gallonsFactors[`${detail.productID}|${detail.containerID}|${detail.uom}`];
+      detail.billedQtyUom = detail.quantity * gallonsFactor.unitsOfMeasureInAContainer;
+      detail.billedRevenue = detail.billedQtyUom * detail.unitPrice;
+      detail.billedGallons = detail.billedQtyUom * gallonsFactor.gallonsInAContainer;
+      detail.billedPricePerGallon = detail.billedRevenue / detail.billedGallons;
+    }
+  }
+
 }
 
