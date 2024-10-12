@@ -20,4 +20,6 @@ rackPriceRoutes.put('/:id', async (req: Request, res: Response) => { });
 
 rackPriceRoutes.delete('/', async (req: Request, res: Response) => { });
 
+rackPriceRoutes.post('/convert',RackPriceController.convertToGallons);
+
 export default rackPriceRoutes;
