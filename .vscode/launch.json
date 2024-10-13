@@ -31,7 +31,18 @@
             "tsconfig-paths/register"
         ],
        
-    }
+    },
+    {
+        "type": "node",
+        "request": "launch",
+        "name": "Debug Single TypeScript File",
+        "program": "${file}",
+        "runtimeArgs": ["-r", "ts-node/register"],
+        "outFiles": ["${workspaceFolder}/**/*.ts"],
+        "sourceMaps": true,
+        "cwd": "${workspaceFolder}",
+        "skipFiles": ["<node_internals>/**"]
+      }
 ]
 }
 
