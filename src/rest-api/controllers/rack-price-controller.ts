@@ -6,6 +6,8 @@ import { PricingRepository } from "../../core-layer/order-entry-module/data-acce
 import { OrderRepository } from "../../core-layer/order-entry-module/data-access-repository/OrderEntryRepository";
 import { OrderRepositoryImpl } from "../../core-layer/order-entry-module/data-access-repository/OrderEntryRepositoryImp";
 import { ConvertPriceUseCase } from "../../core-layer/order-entry-module/use-case-services/ConvertPriceUseCase";
+import { type } from "os";
+import { GetRackPricingWithConversionsUseCase } from "../../core-layer/order-entry-module/use-case-services/GetRackPricingWithConversionUseCase";
 
 const pricingRepository: PricingRepository = new PricingRepositoryImp();
 const orderRepository: OrderRepository = new OrderRepositoryImpl();
@@ -43,35 +45,46 @@ export class RackPriceController {
       }
     }
   }
+
+  static async getAllRackPricesConverted(req:Request,res:Response){
+    try {
+      const GetRackPricingWithConversions = new GetRackPricingWithConversionsUseCase(pricingRepository,orderRepository);
+      
+      const convertedRackPrices = await GetRackPricingWithConversions.execute();
+      return res.status(200).json(convertedRackPrices);
+    } catch (error) {
+      if (error instanceof Error) {
+        return res.status(500).json({ message: error.message });
+      } else {
+        console.error("An unknown error occurred");
+      }
+    }
+
+  }
+
 }
+
+ 
 
 export const checkBodyMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const {
-    productId,
-    containerId,
-    rackPricePerUom,
-    effectiveDate,
-    expirationDate,
-    uom,
-    rackPricePerGallon,
-  } = req.body;
-
-  // Check if all required fields are present and of the correct type
+  const { productId, containerId, rackPricePerUom, effectiveDate, expirationDate, uom } = req.body;
   if (
     typeof productId !== "string" ||
     typeof containerId !== "string" ||
-    typeof rackPricePerUom !== "number" ||
-    typeof rackPricePerGallon !== "number" ||
-    typeof uom !== "string"
-  )
-    return res
-      .status(400)
-      .json({ error: "Invalid request body. Ensure all fields are correct." });
+    typeof rackPricePerUom !== "number" ||   
+    typeof uom !== "string"||
+    typeof effectiveDate !== "number"||
+    typeof expirationDate !== "number"
+  ) {
+    return res.status(400).json({ error: "Invalid request body. Ensure all fields are correct." });
+  } else {
+    next();
+  }
 
-  console.log("middle ware log");
-  next();
+
+
 };

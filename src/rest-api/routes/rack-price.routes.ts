@@ -7,19 +7,14 @@ import { checkBodyMiddleware, RackPriceController } from "../controllers/rack-pr
 const rackPriceRoutes = Router();
 rackPriceRoutes.get("/", async (req: Request, res: Response) => { }); 
 
-rackPriceRoutes.post('/', 
-    (req: Request, res: Response, next: NextFunction) => {
-        console.log('I ran before everything');
-        next();
-    },
-    checkBodyMiddleware,
-    RackPriceController.create
-);
+rackPriceRoutes.post('/',  checkBodyMiddleware, RackPriceController.create);
 
 rackPriceRoutes.put('/:id', async (req: Request, res: Response) => { });
 
 rackPriceRoutes.delete('/', async (req: Request, res: Response) => { });
 
 rackPriceRoutes.post('/convert',RackPriceController.convertToGallons);
+
+rackPriceRoutes.post('/convertAllPrices',RackPriceController.getAllRackPricesConverted);
 
 export default rackPriceRoutes;

@@ -5,8 +5,18 @@ export interface RackPriceDto {
     productId: string;
     containerId: string;
     rackPricePerUom: number;
+    uom: UnitOfMeasure; //string
     effectiveDate: number;
     expirationDate: number;
-    uom: UnitOfMeasure;
+ 
+}
+
+
+
+export interface ProductDto {
+    productId: string;
+    productName: string;
+    apiGravity: number;   
+ 
 }
 

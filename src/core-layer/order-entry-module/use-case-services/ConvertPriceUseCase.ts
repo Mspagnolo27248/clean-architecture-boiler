@@ -18,6 +18,7 @@ export class ConvertPriceUseCase {
     const convertedPrice = UnitOfMeasureConverterService(
       {
         product: productId,
+        apiGravity:1, //Need to looup the APIgravity
         container: containerId,
         uom: uom,
         pricePerUnitOfMeasure: rackPricePerUom,
