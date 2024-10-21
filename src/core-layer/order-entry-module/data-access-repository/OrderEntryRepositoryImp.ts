@@ -66,5 +66,5 @@ export class OrderRepositoryImpl implements OrderRepository {
 const mockUOMAndGallonFactor: Record<string, { unitsOfMeasureInAContainer: number; gallonsInAContainer: number }> = {
     "7946|846|EA": { unitsOfMeasureInAContainer: 1, gallonsInAContainer: .55 },
     "7168|464|EA": { unitsOfMeasureInAContainer: 12, gallonsInAContainer: 3 },
-    "7730|469|EA": { unitsOfMeasureInAContainer: 1, gallonsInAContainer: 4.73 },
+    "7730|469|EA": { unitsOfMeasureInAContainer: 1, gallonsInAContainer: 4.73 }
 };

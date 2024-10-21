@@ -76,9 +76,10 @@ export class GetRackPricingWithConversionsUseCase {
     private createRackPricingWithGallon(
         record: RackPriceDto,
         conversions: UnitOfMeasureConverterServiceReturnType
-    ): RackPricingWithGallons {
-        return {   }as RackPricingWithGallons}
-
+    ) :RackPricingWithGallons {        
+        return  {...record,pricePerGallon:conversions.pricePerGallon}    
+    }
+    
     // Handle errors in a clean and consistent way
     private handleError(error: unknown): never {
         if (error instanceof Error) {
