@@ -6,6 +6,7 @@ import { checkBodyMiddleware, RackPriceController } from "../controllers/rack-pr
 
 const rackPriceRoutes = Router();
 rackPriceRoutes.get("/", async (req: Request, res: Response) => { }); 
+rackPriceRoutes.get("/:id", async (req: Request, res: Response) => { }); 
 
 rackPriceRoutes.post('/',  checkBodyMiddleware, RackPriceController.create);
 
