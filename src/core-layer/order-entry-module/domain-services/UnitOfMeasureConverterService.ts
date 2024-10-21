@@ -1,3 +1,4 @@
+import { ConversionFactorType } from "../data-access-repository/OrderEntryRepository";
 import { UnitOfMeasure } from "../enums/order-entry-enums";
 
 export type UnitOfMeasureConverterServiceReturnType = {
@@ -8,9 +9,10 @@ export type UnitOfMeasureConverterServiceReturnType = {
 
 }
 
+
 export function UnitOfMeasureConverterService(
     inputsToConvert: { product: string, apiGravity: number, container: string, uom: string, pricePerUnitOfMeasure: number, qtyOfContainers: number },
-    conversionFactors: Record<string, { unitsOfMeasureInAContainer: number, gallonsInAContainer: number }>
+    conversionFactors: ConversionFactorType
 ): UnitOfMeasureConverterServiceReturnType
 {   
     const {product,apiGravity,container,uom,pricePerUnitOfMeasure,qtyOfContainers} = inputsToConvert;

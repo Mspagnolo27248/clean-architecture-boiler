@@ -13,15 +13,13 @@ export interface OrderRepository {
     gallonsInAContainer: number
   }>;
 
-  getManyUOMAndGallonFactor(keys: { productId: string, containerId: string, uoms: string }[]): Promise<
-  {[key:string]:{
-    unitsOfMeasureInAContainer: number,
-    gallonsInAContainer: number
-  }}>
+  getManyUOMAndGallonFactor(productKeys: { productId: string, containerId: string, uoms: string }[]): Promise<ConversionFactorType>
 
 
 }
 
+
+export type ConversionFactorType = Record<string, { unitsOfMeasureInAContainer: number, gallonsInAContainer: number }>
 
 export type UOMAndGallonFactorCompositeKeyType = {
   productId: string, containerId: string, uom: string
