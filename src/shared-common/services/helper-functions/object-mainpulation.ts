@@ -125,3 +125,34 @@ export function aggregateByKey<T extends Record<string, any>>(
     return resultMap;
   }
   
+
+
+ export  function swapKeysAndValues<T extends Record<string, any>>(obj: T): { [key: string]: keyof T } {
+    const swapped: { [key: string]: keyof T } = {};
+    
+    for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            const value = obj[key];
+            swapped[value] = key; // Swap key and value
+        }
+    }
+
+    return swapped;
+}
+
+
+// Function to map properties from an instance of T to an instance of U
+export function mapInstance<T, U>(instance: T, mapping:{}): U {
+  const mappedInstance = {} as U;
+  const _mapping = mapping as { [K in keyof T]: keyof U }
+
+  for (const key in _mapping) {
+      if (mapping.hasOwnProperty(key)) {
+          const targetKey = _mapping[key];
+          (mappedInstance as any)[targetKey] = (instance as any)[key];
+      }
+  }
+
+  return mappedInstance;
+}
+

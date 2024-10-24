@@ -1,35 +1,56 @@
-import {OrderHeaderModel } from "../../../shared-common/database/custom-orm/data-models/OrderHeaderModel";
+
+import { OrderHeaderModel } from "../../../shared-common/database/custom-orm/data-models/OrderHeaderModel";
 import { initializeDb } from "../../../shared-common/database/sqlite";
-import { CompositeKeyGenerator } from "../../general/CompositeKeyGenerator";
-import { OrderDTO } from "../data-transfer-objects/order-entry-dtos";
+import { mapInstance } from "../../../shared-common/services/helper-functions/object-mainpulation";
+import { OrderDTO, OrderDetailDTO, OrderHeaderDTO } from "../data-transfer-objects/order-entry-dtos";
 import { Order } from "../domain-entities/OrderEntity";
-import { OrderRepository, UOMAndGallonFactorCompositeKeyType } from "./OrderEntryRepository";
+import { OrderRepository } from "./OrderEntryRepository";
 
 export class OrderRepositoryImpl implements OrderRepository {
 
     async getAllOrders(): Promise<OrderDTO[]> {
+        try{
         const db = await initializeDb();
-         const data:OrderDTO[] =  await db.all('SELECT * FROM ORDERS');     
-        return data
-
-
-    }
-    getOneOrder(orderId: string): Promise<OrderDTO | null> {
-        throw new Error("Method not implemented.");
-    }
-
-    getOneUOMAndGallonFactor(productId: string, containerId: string, uom: string): Promise<{ unitsOfMeasureInAContainer: number; gallonsInAContainer: number; }> {
-        const key = CompositeKeyGenerator.generateKey<UOMAndGallonFactorCompositeKeyType>({productId, containerId, uom});
-        const uomAndGallonFactor = mockUOMAndGallonFactor[key as keyof typeof mockUOMAndGallonFactor];
-        if (!uomAndGallonFactor) {
-            throw new Error("UOM and Gallon Factor not found");
+         const orderHeaders:any[]=  await db.all('SELECT * FROM OrderHeader'); 
+          const HeadertableProperties = OrderHeaderModel.getTableColumns()   
+          const DetailableProperties = OrderHeaderModel.getTableColumns()       
+          const orderDetails:any[]=  await db.all('SELECT * FROM OrderDetail'); 
+          const orderDetailModels:OrderDetailDTO[] = [];
+          for(const order of orderDetails){
+            orderDetailModels.push(mapInstance<any,OrderDetailDTO>(order,DetailableProperties))
+          } 
+         const orderMap = new Map<string,any>();
+         for(const header of orderHeaders){
+            const mappedHeader = mapInstance<any,OrderHeaderDTO>(header,HeadertableProperties)
+            orderMap.set(String(header.OrderID),mappedHeader);
+         }
+         for(const details of orderDetailModels){
+            const orderHeader = orderMap.get(String(details.orderID));
+            if(orderHeader){
+                orderMap.set(String(details.orderID),{...orderHeader,details:[...orderHeader.details,details]});
+            }           
+         }
+        return [...orderMap.values()]
+        } catch(error){
+            throw new Error("Error Getting Orders");
         }
-        return Promise.resolve(uomAndGallonFactor);
+
     }
-    getManyUOMAndGallonFactor(keys: { productId: string; containerId: string; uoms: string; }[]): Promise<{ [key: string]: { unitsOfMeasureInAContainer: number; gallonsInAContainer: number; }; }> {
-        return Promise.resolve(mockUOMAndGallonFactor);
-    }
+
+
+    async getOneOrder(orderId: string): Promise<OrderDTO> {
+        try{
+            const db = await initializeDb();
+             const orderHeaders:OrderHeaderDTO[]=  await db.all(`SELECT * FROM OrderHeader where OrderId= ${orderId}`); 
+             const orderDetails:OrderDetailDTO[]=  await db.all(`SELECT * FROM OrderDetail where OrderId= ${orderId} `);         
+            return {...orderHeaders[0],details:orderDetails}
+            } catch(error){
+                throw new Error("Error Getting Orders");
+            }
     
+    }
+
+
     async createOrder(order: Order): Promise<Order> {
         const db = await initializeDb();
         let createdOrder: Order;  
@@ -62,9 +83,7 @@ export class OrderRepositoryImpl implements OrderRepository {
     }
 }
 
-//Mock Data
-const mockUOMAndGallonFactor: Record<string, { unitsOfMeasureInAContainer: number; gallonsInAContainer: number }> = {
-    "7946|846|EA": { unitsOfMeasureInAContainer: 1, gallonsInAContainer: .55 },
-    "7168|464|EA": { unitsOfMeasureInAContainer: 12, gallonsInAContainer: 3 },
-    "7730|469|EA": { unitsOfMeasureInAContainer: 1, gallonsInAContainer: 4.73 }
-};
+
+
+
+

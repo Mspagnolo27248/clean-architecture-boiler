@@ -1,9 +1,9 @@
-import { OrderRepository } from "../data-access-repository/OrderEntryRepository";
+import { PricingRepository } from "../data-access-repository/PricingRepository";
 import { RackPriceDto } from "../data-transfer-objects/price-records-dtos";
 import { UnitOfMeasureConverterService, UnitOfMeasureConverterServiceReturnType } from "../domain-services/UnitOfMeasureConverterService";
 
 export class ConvertPriceUseCase {
-  constructor(private orderRepository: OrderRepository) {}
+  constructor(private priceRepository: PricingRepository) { }
 
   public async execute(priceRecord: RackPriceDto): Promise<UnitOfMeasureConverterServiceReturnType> {
     const {
@@ -12,13 +12,14 @@ export class ConvertPriceUseCase {
       uom,
       rackPricePerUom,
     } = priceRecord;
-    const gallonsFactors = await this.orderRepository.getManyUOMAndGallonFactor(
+    const gallonsFactors = await this.priceRepository.getManyUOMAndGallonFactor(
       [{ productId: productId, containerId: containerId, uoms: uom }]
     );
+    const product = await this.priceRepository.getProductById(productId);
     const convertedPrice = UnitOfMeasureConverterService(
       {
         product: productId,
-        apiGravity:1, //Need to looup the APIgravity
+        apiGravity: product.apiGravity, 
         container: containerId,
         uom: uom,
         pricePerUnitOfMeasure: rackPricePerUom,
@@ -26,7 +27,6 @@ export class ConvertPriceUseCase {
       },
       gallonsFactors
     );
-    console.log(convertedPrice);
     return convertedPrice;
   }
 }

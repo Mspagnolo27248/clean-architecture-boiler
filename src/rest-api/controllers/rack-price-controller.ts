@@ -14,7 +14,7 @@ const orderRepository: OrderRepository = new OrderRepositoryImpl();
 const createRackPriceUseCase: CreateRackPriceUseCase =
   new CreateRackPriceUseCase(pricingRepository);
 const convertPriceRecordToGallons: ConvertPriceUseCase =
-  new ConvertPriceUseCase(orderRepository);
+  new ConvertPriceUseCase(pricingRepository);
 
 export class RackPriceController {
   static async create(req: Request, res: Response) {

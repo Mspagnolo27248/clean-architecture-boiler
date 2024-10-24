@@ -1,13 +1,15 @@
 import { OrderRepositoryImpl } from "../../core-layer/order-entry-module/data-access-repository/OrderEntryRepositoryImp";
 import {OrderDTO } from "../../core-layer/order-entry-module/data-transfer-objects/order-entry-dtos";
-import { Order } from "../../core-layer/order-entry-module/domain-entities/OrderEntity";
 import { BillOrderUseCase } from "../../core-layer/order-entry-module/use-case-services/BillOrderUseCase";
 import { CreateOrderUseCase } from "../../core-layer/order-entry-module/use-case-services/CreateOrderUseCase";
 import { Request, Response } from 'express';
 import { GetAllOrdersUseCase } from "../../core-layer/order-entry-module/use-case-services/GetAllOrdersUseCase";
+import { PricingRepositoryImp } from "../../core-layer/order-entry-module/data-access-repository/PricingReposityoryImp";
 
 //Dependecy Injection Section
 const orderRepository = new OrderRepositoryImpl();
+
+const priceRepository = new PricingRepositoryImp();
 
 
 export class OrderController {
@@ -40,7 +42,7 @@ export class OrderController {
   }
 
 static async billOrder(req: Request, res: Response) {
-  const billOrderUseCase = new BillOrderUseCase(orderRepository)
+  const billOrderUseCase = new BillOrderUseCase(orderRepository,priceRepository)
   try {
       const orderDTO:OrderDTO = req.body
       const result = await billOrderUseCase.execute(orderDTO);      

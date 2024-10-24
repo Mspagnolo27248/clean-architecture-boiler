@@ -30,3 +30,12 @@ export function Required(target: any, propertyKey: string) {
       Reflect.set(target,'validators', validators);
     };
   }
+
+
+export function TableColumn(columnName?: string): PropertyDecorator {
+  return function(target: any, propertyKey: string | symbol) {
+    const columns = Reflect.get(target, 'columns') || {};
+    columns[propertyKey] = columnName || propertyKey;
+    Reflect.defineProperty(target, 'columns', { value: columns, enumerable: false, writable: false });
+  };
+}

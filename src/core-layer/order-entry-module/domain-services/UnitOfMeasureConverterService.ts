@@ -1,4 +1,4 @@
-import { ConversionFactorType } from "../data-access-repository/OrderEntryRepository";
+import { ConversionFactorType } from "../data-access-repository/PricingRepository";
 import { UnitOfMeasure } from "../enums/order-entry-enums";
 
 export type UnitOfMeasureConverterServiceReturnType = {

@@ -5,7 +5,7 @@ export class GetOneOrderUseCase{
 
     constructor(private orderRepository:OrderRepository){}
 
-    public async execute(orderId:string):Promise<OrderDTO | null>{
+    public async execute(orderId:string):Promise<OrderDTO>{
         return this.orderRepository.getOneOrder(orderId);
     }
 }

@@ -1,5 +1,5 @@
-import { ConversionFactorType, OrderRepository } from "../data-access-repository/OrderEntryRepository";
-import { PricingRepository } from "../data-access-repository/PricingRepository";
+import { OrderRepository } from "../data-access-repository/OrderEntryRepository";
+import { ConversionFactorType, PricingRepository } from "../data-access-repository/PricingRepository";
 import { ProductDto, RackPriceDto } from "../data-transfer-objects/price-records-dtos";
 import { UnitOfMeasureConverterService, UnitOfMeasureConverterServiceReturnType } from "../domain-services/UnitOfMeasureConverterService";
 
@@ -41,7 +41,7 @@ export class GetRackPricingWithConversionsUseCase {
             uoms: record.uom
         }));
 
-        return await this.orderRepository.getManyUOMAndGallonFactor(pricingDetails);
+        return await this.pricingRepository.getManyUOMAndGallonFactor(pricingDetails);
     }
 
     // Calculate and convert pricing using the retrieved data
@@ -76,10 +76,10 @@ export class GetRackPricingWithConversionsUseCase {
     private createRackPricingWithGallon(
         record: RackPriceDto,
         conversions: UnitOfMeasureConverterServiceReturnType
-    ) :RackPricingWithGallons {        
-        return  {...record,pricePerGallon:conversions.pricePerGallon}    
+    ): RackPricingWithGallons {
+        return { ...record, pricePerGallon: conversions.pricePerGallon }
     }
-    
+
     // Handle errors in a clean and consistent way
     private handleError(error: unknown): never {
         if (error instanceof Error) {
