@@ -65,8 +65,24 @@ export class ORM {
   }
 
 
+
+    public static mapRecordToModel<T extends Record<string,any>>(this: typeof ORM,record: any, model: Constructor<T>): T {
+    const modelToColumnMapping = this.getModelProperties();
+    const instance = new model();
+    const keys = Object.keys(instance);
+  
+    keys.forEach(key => {
+      if (record.hasOwnProperty(modelToColumnMapping[key])) {
+        (instance as any)[key] = record[modelToColumnMapping[key]]; // Map record properties to instance
+      }
+    });
+  
+    return instance;
+  }
+
 }
 
+type Constructor<T> = new (...args: any[]) => T;
 
 
 
