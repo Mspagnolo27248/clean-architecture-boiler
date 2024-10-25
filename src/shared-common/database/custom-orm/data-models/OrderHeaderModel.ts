@@ -18,9 +18,9 @@ export class OrderHeaderModel extends ORM implements OrderHeaderDTO{
     billedQtyUom: number = 0;
 
     @TableColumn('BilledRevenue')
-    billedRevenue?: number | undefined;
+    billedRevenue: number =0;
 
     @TableColumn('BilledGallons')
-    billedGallons?: number | undefined;
+    billedGallons: number = 0;
 
 }

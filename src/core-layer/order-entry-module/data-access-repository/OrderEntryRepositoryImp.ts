@@ -1,3 +1,4 @@
+import { OrderDetailModel } from "../../../shared-common/database/custom-orm/data-models/OrderDetail";
 import { OrderHeaderModel } from "../../../shared-common/database/custom-orm/data-models/OrderHeaderModel";
 import { initializeDb } from "../../../shared-common/database/sqlite";
 import { mapInstance } from "../../../shared-common/services/helper-functions/object-mainpulation";
@@ -14,7 +15,7 @@ export class OrderRepositoryImpl implements OrderRepository {
     try {
       const db = await initializeDb();
       const HeadertableProperties = OrderHeaderModel.getTableColumns();
-      const DetailableProperties = OrderHeaderModel.getTableColumns();
+      const DetailableProperties = OrderDetailModel.getTableColumns();
       const orderHeaders = await db.all("SELECT * FROM OrderHeader");
       const orderDetails = await db.all("SELECT * FROM OrderDetail");
       const orderDetailModels: OrderDetailDTO[] = [];
@@ -47,47 +48,54 @@ export class OrderRepositoryImpl implements OrderRepository {
     }
   }
 
+
   async getOneOrder(orderId: string): Promise<OrderDTO> {
-    try {
+    try {  
       const db = await initializeDb();
-      const orderHeaders: OrderHeaderDTO[] = await db.all(
+      const orderHeadersResults: OrderHeaderDTO[] = await db.all(
         `SELECT * FROM OrderHeader where OrderId= ${orderId}`
       );
-      const orderDetails: OrderDetailDTO[] = await db.all(
+      const orderHeader = OrderHeaderModel.mapRecordToModel(orderHeadersResults[0],OrderHeaderModel)
+      const orderDetailResults: OrderDetailDTO[] = await db.all(
         `SELECT * FROM OrderDetail where OrderId= ${orderId} `
       );
-      return { ...orderHeaders[0], details: orderDetails };
+      const orderDetails = orderDetailResults.map(detail=>(OrderDetailModel.mapRecordToModel(detail,OrderDetailModel)));
+      return { ...orderHeader, details: orderDetails };
     } catch (error) {
       throw new Error("Error Getting Orders");
     }
   }
 
+
   async createOrder(order: Order): Promise<Order> {
     const db = await initializeDb();
-    let createdOrder: Order;
-
-    try {
-      const orderHeader = order.getHeader();
+    const orderHeader = order.getHeader();
+    const orderDetails = order.getDetails();
+    const orderId = orderHeader.orderID
+    const orderExists = await db.get(`select * from OrderHeader where OrderID = ${orderId}`)
+    if (orderExists) throw new Error(`Order Already Exists:${orderId}`)
+    try {    
       const insertHeaderStatement = OrderHeaderModel.insert(orderHeader);
-
-      // Start a transaction
+      const orderDetailsInsertStatments = orderDetails.map(detail=>OrderDetailModel.insert(detail))
       await db.exec("BEGIN TRANSACTION");
-
-      // Insert the order header
       const headerResult = await db.run(insertHeaderStatement);
       const headerId = headerResult.lastID; // Get the last inserted ID for the header
+      for (const stmt of orderDetailsInsertStatments) {
+        await db.exec(stmt);
+      }
       await db.exec("COMMIT");
-    } catch (error) {
-      // Rollback the transaction in case of an error
-      if (error instanceof Error) {
-        await db.exec("ROLLBACK");
-        console.error(`Error creating order: ${error.message}`);
+    } catch (error) {    
+      await db.exec("ROLLBACK");  
+      if (error instanceof Error) {     
         throw new Error(`Error creating order: ${error.message}`);
+      } else {
+        throw new Error('Error Creating Order')
       }
     } finally {
       await db.close();
     }
-
     return order;
   }
+  
 }
+

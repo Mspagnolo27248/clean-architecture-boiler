@@ -13,6 +13,16 @@ ordersRoutes.get("/", async (req: Request, res: Response) => {
   }
 }); 
 
+ordersRoutes.get("/:id", async (req: Request, res: Response) => {
+  try {
+    const result = await OrderController.getOneOrders(req, res);
+    return result;
+  } catch (error) {
+    return res.status(500).json({ message: "Error getting one order" });
+  }
+}); 
+
+
 ordersRoutes.post('/', async (req: Request, res: Response) => {
     try {  
       const result = await OrderController.create(req, res);

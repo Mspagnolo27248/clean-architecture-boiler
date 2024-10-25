@@ -6,7 +6,7 @@ import { ORM } from "../parent-class-orm";
 
 
 @ARGModel('OrderDetail')
-export class OrderDetail extends ORM  implements OrderDetailDTO{
+export class OrderDetailModel extends ORM  implements OrderDetailDTO{
     @KeyField
     @TableColumn('OrderID')
     orderDetailID: number = 0;  // Primary key

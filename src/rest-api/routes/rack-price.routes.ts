@@ -5,17 +5,17 @@ import { checkBodyMiddleware, RackPriceController } from "../controllers/rack-pr
 
 
 const rackPriceRoutes = Router();
-rackPriceRoutes.get("/", async (req: Request, res: Response) => { }); 
-rackPriceRoutes.get("/:id", async (req: Request, res: Response) => { }); 
 
 rackPriceRoutes.post('/',  checkBodyMiddleware, RackPriceController.create);
-
-rackPriceRoutes.put('/:id', async (req: Request, res: Response) => { });
-
-rackPriceRoutes.delete('/', async (req: Request, res: Response) => { });
 
 rackPriceRoutes.post('/convert',RackPriceController.convertToGallons);
 
 rackPriceRoutes.post('/convertAllPrices',RackPriceController.getAllRackPricesConverted);
+
+rackPriceRoutes.put('/:id', async (req: Request, res: Response) => { });
+rackPriceRoutes.delete('/', async (req: Request, res: Response) => { });
+rackPriceRoutes.get("/", async (req: Request, res: Response) => { }); 
+rackPriceRoutes.get("/:id", async (req: Request, res: Response) => { }); 
+
 
 export default rackPriceRoutes;
