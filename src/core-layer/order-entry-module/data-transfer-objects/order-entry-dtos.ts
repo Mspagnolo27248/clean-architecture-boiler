@@ -31,3 +31,19 @@ export interface OrderDetailDTO {
 export interface OrderDTO extends OrderHeaderDTO {
   details: OrderDetailDTO[];
 }
+
+
+export interface CustomerShipToDTO{
+
+  customerShipToId: string;  // Composite key (ShipToID, CustomerID)
+    shipToID: string;
+    shipToName: string;
+    customerID: string;
+    customerName: string;
+    salespersonID: string;
+    salespersonName: string;
+    city: string;
+    state: string;
+    country: string;
+    company: string;
+}
