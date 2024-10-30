@@ -8,7 +8,7 @@ import { ORM } from "../parent-class-orm";
 @ARGModel('OrderDetail')
 export class OrderDetailModel extends ORM  implements OrderDetailDTO{
     @KeyField
-    @TableColumn('OrderID')
+    @TableColumn('OrderDetailID')
     orderDetailID: number = 0;  // Primary key
 
     @KeyField

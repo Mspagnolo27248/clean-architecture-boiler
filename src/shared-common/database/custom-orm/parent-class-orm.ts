@@ -1,6 +1,6 @@
 import { swapKeysAndValues } from "../../services/helper-functions/object-mainpulation";
 
-
+//TODO - a table column should use the class name unless specifically has @TableColumn decorator or @Exclude
 
 
 export class ORM {
