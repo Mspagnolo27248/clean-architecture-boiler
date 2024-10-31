@@ -74,6 +74,8 @@ export class OrderRepositoryImpl implements OrderRepository {
     const orderId = orderHeader.orderID
     const orderExists = await db.get(`select * from OrderHeader where OrderID = ${orderId}`)
     if (orderExists) throw new Error(`Order Already Exists:${orderId}`)
+    const customerExists = await db.get(`select * from CustomerShipTo where CustomerID = ${orderHeader.customerID}`)
+  if(!customerExists)throw new Error(`Customer Does not exist ID:${orderHeader.customerID}`)
     try {    
       const insertHeaderStatement = OrderHeaderModel.insert(orderHeader);
       const orderDetailsInsertStatments = orderDetails.map(detail=>OrderDetailModel.insert(detail))
