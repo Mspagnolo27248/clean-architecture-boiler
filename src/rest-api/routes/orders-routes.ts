@@ -4,6 +4,7 @@ import { OrderController } from "../controllers/order-controller";
 
 
 const ordersRoutes = Router();
+
 ordersRoutes.get("/", async (req: Request, res: Response) => {
   try {
     const result = await OrderController.getAllOrders(req, res);
@@ -34,7 +35,15 @@ ordersRoutes.post('/', async (req: Request, res: Response) => {
 
 ordersRoutes.put('/:id', (req: Request, res: Response) => { });
 
-ordersRoutes.delete('/', async (req: Request, res: Response) => { });
+ordersRoutes.delete('/:id', async (req: Request, res: Response) => {
+  try {  
+    const result = await OrderController.delete(req, res);
+    return result; 
+  } catch (error) {
+    return res.status(500).json({ message: "Error deleting order" });
+  }
+
+ });
 
 
 ordersRoutes.post('/complete', async (req: Request, res: Response) => {

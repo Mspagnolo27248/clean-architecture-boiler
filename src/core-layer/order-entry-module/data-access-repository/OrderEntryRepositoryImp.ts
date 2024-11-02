@@ -7,6 +7,7 @@ import {
   OrderDetailDTO,
   OrderHeaderDTO,
 } from "../data-transfer-objects/order-entry-dtos";
+import { AppError } from "../domain-entities/AppError";
 import { Order } from "../domain-entities/OrderEntity";
 import { OrderRepository } from "./OrderEntryRepository";
 
@@ -71,17 +72,21 @@ export class OrderRepositoryImpl implements OrderRepository {
     const db = await initializeDb();
     const orderHeader = order.getHeader();
     const orderDetails = order.getDetails();
-    const orderId = orderHeader.orderID
+    let orderId = orderHeader.orderID
     const orderExists = await db.get(`select * from OrderHeader where OrderID = ${orderId}`)
     if (orderExists) throw new Error(`Order Already Exists:${orderId}`)
     const customerExists = await db.get(`select * from CustomerShipTo where CustomerID = ${orderHeader.customerID}`)
   if(!customerExists)throw new Error(`Customer Does not exist ID:${orderHeader.customerID}`)
-    try {    
-      const insertHeaderStatement = OrderHeaderModel.insert(orderHeader);
-      const orderDetailsInsertStatments = orderDetails.map(detail=>OrderDetailModel.insert(detail))
+    try {         
       await db.exec("BEGIN TRANSACTION");
+      const insertHeaderStatement = OrderHeaderModel.insert(orderHeader);
       const headerResult = await db.run(insertHeaderStatement);
-      const headerId = headerResult.lastID; // Get the last inserted ID for the header
+      
+      if(!headerResult.lastID){
+        throw new Error('Error inserting header')
+      } 
+      orderId = headerResult.lastID;
+      const orderDetailsInsertStatments = orderDetails.map(detail=>OrderDetailModel.insert({...detail,orderID:orderId}))
       for (const stmt of orderDetailsInsertStatments) {
         await db.exec(stmt);
       }
@@ -96,7 +101,32 @@ export class OrderRepositoryImpl implements OrderRepository {
     } finally {
       await db.close();
     }
-    return order;
+    const createdOrder = await this.getOneOrder(String(orderId))
+    return  new Order(createdOrder);
+  }
+
+
+  async deleteOrder(orderId: string): Promise<OrderDTO> {
+    const order = await this.getOneOrder(orderId)
+    const db = await initializeDb();
+    try {      
+      await db.run('BEGIN TRANSACTION'); 
+      const deleteOrderDetails = await db.run(`DELETE FROM OrderDetail WHERE OrderID = ?`, order.orderID);
+      const deleteOrderHeader = await db.run(`DELETE FROM OrderHeader WHERE OrderID = ?`, order.orderID);
+      if (!deleteOrderDetails.changes || !deleteOrderHeader.changes) {
+          throw new Error('Error with DB transaction deleting records.');
+      }  
+      await db.run('COMMIT'); 
+      return order;
+  
+  } catch (err) {
+      await db.run('ROLLBACK'); 
+      throw err; 
+  }
+  
+   
+
+      
   }
   
 }

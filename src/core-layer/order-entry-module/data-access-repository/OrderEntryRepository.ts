@@ -7,7 +7,8 @@ export interface OrderRepository {
   getAllOrders(): Promise<OrderDTO[]>;
 
   getOneOrder(orderId: string): Promise<OrderDTO>;
-
+  
+  deleteOrder(orderId:string):Promise<OrderDTO>;
 
 }
 

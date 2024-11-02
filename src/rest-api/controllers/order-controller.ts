@@ -7,6 +7,7 @@ import { GetAllOrdersUseCase } from "../../core-layer/order-entry-module/use-cas
 import { PricingRepositoryImp } from "../../core-layer/order-entry-module/data-access-repository/PricingReposityoryImp";
 import { throwErrorOrDefaultMsg } from "../../shared-common/services/helper-functions/utilites";
 import { GetOneOrderUseCase } from "../../core-layer/order-entry-module/use-case-services/GetOneOrderUseCase";
+import { DeleteOrderUseCase } from "../../core-layer/order-entry-module/use-case-services/DeleteOrderUseCase";
 
 //Dependecy Injection Section
 const orderRepository = new OrderRepositoryImpl();
@@ -57,7 +58,19 @@ export class OrderController {
     }
   }
 
+static async delete(req: Request, res: Response)
+{
+  const deleteOrderUseCase = new DeleteOrderUseCase(orderRepository);
+  try {
+    const orderId = req.params.id;
+    const result = await deleteOrderUseCase.execute(orderId);
+    return res.status(200).json(result);
+  } catch (error) {
+    const apiError = throwErrorOrDefaultMsg(error, 'error in delete order usecase.')
+    return res.status(500).json({ message: apiError.message });
+  }
 
+}
 
   static async billOrder(req: Request, res: Response) {
     const billOrderUseCase = new BillOrderUseCase(orderRepository, priceRepository)
