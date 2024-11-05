@@ -1,13 +1,15 @@
 import { OrderDetailDTO } from "../../../../core-layer/order-entry-module/data-transfer-objects/order-entry-dtos";
 import { UnitOfMeasure } from "../../../../core-layer/order-entry-module/enums/order-entry-enums";
-import { ARGModel, KeyField, TableColumn } from "../orm-decorators";
+import { ARGModel, IdentityColumn, KeyField, TableColumn } from "../orm-decorators";
 import { ORM } from "../parent-class-orm";
 
 
 
 @ARGModel('OrderDetail')
 export class OrderDetailModel extends ORM  implements OrderDetailDTO{
-    @KeyField
+    @KeyField 
+    @IdentityColumn()
+    @TableColumn('OrderDetailID')
     orderDetailID: number = 0;  // Primary key
 
     @KeyField

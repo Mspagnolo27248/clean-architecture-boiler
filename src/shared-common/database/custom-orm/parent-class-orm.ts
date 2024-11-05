@@ -12,16 +12,27 @@ export class ORM {
   static insert<T extends Record<string, any>>(this: typeof ORM, instance: T): string {
     const tableName = Reflect.get(this, 'tableName');
     const defaultModel = new this();
-    const model = updateSourceValuesFromTarget(defaultModel, instance)
-    const record = this.mapModelToRecord(model); 
-    const tableFields = Object.keys(record).join(', ');
-    const fieldValues = Object.keys(record).map(key => {
-      const value = record[key];
-      return typeof value === 'string' ? `'${value}'` : value;
-    });
-    const valuesString = fieldValues.join(', ')
+    const target = updateTargetValuesFromSource(defaultModel, instance);
+    const record = this.mapModelToRecord(target);
+    const propertyMap = this.getModelProperties();
+    const identityFields = Reflect.get(this.prototype, 'identityFields') || [];
+    const identityTableFields = identityFields.map((field: string | number)=>propertyMap[field])
+    
+    
+    const tableFields = Object.keys(record)
+        .filter(field => !identityTableFields.includes(field))  // Exclude identity fields
+        .join(', ');
+    const fieldValues = Object.keys(record)
+        .filter(field => !identityTableFields.includes(field))  // Exclude identity fields
+        .map(key => {
+            const value = record[key];
+            return typeof value === 'string' ? `'${value}'` : value;
+        });
+    
+    const valuesString = fieldValues.join(', ');
     return `INSERT INTO ${tableName} (${tableFields}) VALUES (${valuesString})`;
-  }
+}
+
 
 
   static delete<T extends Record<string, any>>(this: typeof ORM, instance: T): string {
@@ -102,7 +113,7 @@ export class ORM {
 type Constructor<T> = new (...args: any[]) => T;
 
 
-function updateSourceValuesFromTarget(target: Record<string, any>, source: Record<string, any>): Record<string, any> {
+function updateTargetValuesFromSource(target: Record<string, any>, source: Record<string, any>): Record<string, any> {
   Object.keys(target).forEach((key) => {
     if (key in source) {
       target[key] = source[key];

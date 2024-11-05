@@ -5,6 +5,7 @@
     return function(target: any) {
       const name = tableName || target.name;
       Reflect.defineProperty(target,'tableName', {value:name,enumerable:false,writable:false} );
+      
     };
   }
 
@@ -38,4 +39,13 @@ export function TableColumn(columnName?: string): PropertyDecorator {
     columns[propertyKey] = columnName || propertyKey;
     Reflect.defineProperty(target, 'columns', { value: columns, enumerable: false, writable: false });
   };
+}
+
+
+export function IdentityColumn():PropertyDecorator {
+  return function(target: any, propertyKey: string|symbol){
+  const identityFields = Reflect.get(target, 'identityFields') || [];
+  identityFields.push(propertyKey);
+  Reflect.defineProperty(target, 'identityFields', { value: identityFields, enumerable: false, writable: false });
+  }
 }
