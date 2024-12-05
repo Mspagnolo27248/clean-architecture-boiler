@@ -6,12 +6,8 @@ export class ConvertPriceUseCase {
   constructor(private priceRepository: PricingRepository) { }
 
   public async execute(priceRecord: RackPriceDto): Promise<UnitOfMeasureConverterServiceReturnType> {
-    const {
-      productId,
-      containerId,
-      uom,
-      rackPricePerUom,
-    } = priceRecord;
+    const {productId,containerId,uom,rackPricePerUom,} = priceRecord;
+    
     const gallonsFactors = await this.priceRepository.getManyUOMAndGallonFactor(
       [{ productId: productId, containerId: containerId, uoms: uom }]
     );

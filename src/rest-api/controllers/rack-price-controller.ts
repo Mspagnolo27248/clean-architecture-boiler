@@ -13,7 +13,7 @@ const pricingRepository: PricingRepository = new PricingRepositoryImp();
 const orderRepository: OrderRepository = new OrderRepositoryImpl();
 const createRackPriceUseCase: CreateRackPriceUseCase =
   new CreateRackPriceUseCase(pricingRepository);
-const convertPriceRecordToGallons: ConvertPriceUseCase =
+const convertPriceUseCase: ConvertPriceUseCase =
   new ConvertPriceUseCase(pricingRepository);
 
 export class RackPriceController {
@@ -35,7 +35,7 @@ export class RackPriceController {
   static async convertToGallons(req: Request, res: Response) {
     try {
       const priceRecord = req.body as RackPriceDto;
-      const convertedPrice = await convertPriceRecordToGallons.execute(priceRecord);
+      const convertedPrice = await convertPriceUseCase.execute(priceRecord);
       return res.status(200).json(convertedPrice);
     } catch (error) {
       if (error instanceof Error) {
