@@ -1,6 +1,7 @@
 import { initializeDb } from "../../../shared-common/database/sqlite";
 import { CompositeKeyGenerator } from "../../general/CompositeKeyGenerator";
 import { ProductDto, RackPriceDto } from "../data-transfer-objects/price-records-dtos";
+import { PriceAgreement } from "../domain-entities/PriceAgreement";
 import { PricingRepository, UOMAndGallonFactorCompositeKeyType } from "./PricingRepository";
 
 
@@ -29,6 +30,9 @@ export class PricingRepositoryImp implements PricingRepository {
         throw new Error('Error creating order');
     }
 
+    async createPriceAgreement(entity:PriceAgreement):Promise<PriceAgreement>{
+        return entity;
+    }
 
     async getProductById(productId: string): Promise<ProductDto> {
         const db = await initializeDb();

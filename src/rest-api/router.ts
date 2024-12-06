@@ -1,6 +1,7 @@
 import { Router } from "express";
 import ordersRoutes from "./routes/orders-routes";
 import rackPriceRoutes from "./routes/rack-price.routes";
+import specialPriceRoutes from "./routes/special-price.routes";
 
 
 const router = Router();
@@ -11,6 +12,7 @@ const router = Router();
 /*This should be a list of Resources*/
 router.use('/orders',ordersRoutes);
 router.use('/rack-price',rackPriceRoutes);
+router.use('/special-price',specialPriceRoutes);
 //router.use('/endpoint2',blendRequirements);
 
 

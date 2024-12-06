@@ -10,7 +10,14 @@ export interface RackPriceDto {
     expirationDate: number;
  
 }
-
+export interface PriceAgreementDto {
+productCode: string;
+containerCode: string;
+customerCode: string;
+customerShipTo?: string;
+startDate: number;
+endDate: number;
+}
 
 
 export interface ProductDto {
@@ -20,3 +27,7 @@ export interface ProductDto {
  
 }
 
+
+export interface SpecialPriceDTO {
+    
+}

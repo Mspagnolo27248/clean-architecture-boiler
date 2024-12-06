@@ -6,15 +6,12 @@ import { PricingRepository } from "../../core-layer/order-entry-module/data-acce
 import { OrderRepository } from "../../core-layer/order-entry-module/data-access-repository/OrderEntryRepository";
 import { OrderRepositoryImpl } from "../../core-layer/order-entry-module/data-access-repository/OrderEntryRepositoryImp";
 import { ConvertPriceUseCase } from "../../core-layer/order-entry-module/use-case-services/ConvertPriceUseCase";
-import { type } from "os";
 import { GetRackPricingWithConversionsUseCase } from "../../core-layer/order-entry-module/use-case-services/GetRackPricingWithConversionUseCase";
 
 const pricingRepository: PricingRepository = new PricingRepositoryImp();
 const orderRepository: OrderRepository = new OrderRepositoryImpl();
-const createRackPriceUseCase: CreateRackPriceUseCase =
-  new CreateRackPriceUseCase(pricingRepository);
-const convertPriceUseCase: ConvertPriceUseCase =
-  new ConvertPriceUseCase(pricingRepository);
+const createRackPriceUseCase: CreateRackPriceUseCase =  new CreateRackPriceUseCase(pricingRepository);
+const convertPriceUseCase: ConvertPriceUseCase =  new ConvertPriceUseCase(pricingRepository);
 
 export class RackPriceController {
   static async create(req: Request, res: Response) {

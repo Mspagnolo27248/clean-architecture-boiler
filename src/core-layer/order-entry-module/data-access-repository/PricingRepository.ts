@@ -1,9 +1,11 @@
-import { ProductDto, RackPriceDto } from "../data-transfer-objects/price-records-dtos";
+import { PriceAgreementDto, ProductDto, RackPriceDto } from "../data-transfer-objects/price-records-dtos";
+import { PriceAgreement } from "../domain-entities/PriceAgreement";
 
 
 
 
 export interface PricingRepository {
+    createPriceAgreement(params:PriceAgreement):Promise<PriceAgreement>;
     createRackPrice(rackPrice: RackPriceDto): Promise<RackPriceDto>;
     getProductById(productId: string): Promise<ProductDto>;
     getAllRackPricing(): Promise<RackPriceDto[]> ;
